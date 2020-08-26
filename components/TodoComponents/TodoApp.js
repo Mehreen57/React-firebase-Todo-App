@@ -11,7 +11,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import TodoItem from "./TodoItem";
 import AddItem from "./AddItem";
-import { db } from '../../server/firebase';
+import { db } from "../../server/firebase";
 
 function TodoApp({ navigation }) {
   // React Hooks declarations
@@ -20,36 +20,36 @@ function TodoApp({ navigation }) {
 
   useEffect(() => {
     setFirebaseRead();
-  }, [])
+  }, []);
 
   // delete an item
   const deleteItem = (id) => {
-    db.collection('todos').doc(id)
-    .delete()
-    .then(() => {
-      setFirebaseRead();
-    })
-    .catch(err => {
-
-    })
+    db.collection("todos")
+      .doc(id)
+      .delete()
+      .then(() => {
+        setFirebaseRead();
+      })
+      .catch((err) => {});
   };
 
+  // setFirebaseRead function
   const setFirebaseRead = () => {
-    db.collection('todos')
-    .get()
-    .then(res => {
-      const tempTodo = [];
+    db.collection("todos")
+      .get()
+      .then((res) => {
+        const tempTodo = [];
 
-      res.forEach(doc => {
-        tempTodo.push({ ...doc.data(), id: doc.id })
+        res.forEach((doc) => {
+          tempTodo.push({ ...doc.data(), id: doc.id });
+        });
+
+        setTodos(tempTodo);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-
-      setTodos(tempTodo)
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
+  };
 
   const changeHandler = (value) => {
     setText(value);
@@ -61,36 +61,36 @@ function TodoApp({ navigation }) {
       Alert.alert(" Enter todo");
       return TodoList;
     }
-    
-    db.collection('todos').add({ text: text, isCompleted: false })
-    .then(res => {
-      setText('');
-      setFirebaseRead();
-    })
-    .catch(err => {
-      console.log(err);
-    });
 
+    db.collection("todos")
+      .add({ text: text, isCompleted: false })
+      .then((res) => {
+        setText("");
+        setFirebaseRead();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   // completed list...
   const completedTask = (item) => {
-    console.log(item)
-    db.collection('todos')
-    .doc(item.id)
-    .update({ isCompleted: !item.isCompleted })
-    .then(() => {
-      setFirebaseRead();
-    })
-    .catch(() => {
-      //do err stuffs
-    })
+    console.log(item);
+    db.collection("todos")
+      .doc(item.id)
+      .update({ isCompleted: !item.isCompleted })
+      .then(() => {
+        setFirebaseRead();
+      })
+      .catch(() => {
+        //do err stuffs
+      });
   };
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps={"handled"}>
       <View style={styles.main_container}>
-        <AddItem 
+        <AddItem
           submitHandler={submitHandler}
           changeHandler={changeHandler}
           value={text}
@@ -100,8 +100,8 @@ function TodoApp({ navigation }) {
           <FlatList
             data={todos}
             renderItem={({ item }) => (
-              <TodoItem 
-                item={item} 
+              <TodoItem
+                item={item}
                 deleteItem={deleteItem}
                 markCompleted={completedTask}
               />

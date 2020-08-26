@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Text, View, StyleSheet, TextInput } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
+import { Keyboard } from "react-native";
 
 export default function AddItem({ submitHandler, changeHandler, value }) {
-
   return (
     <View style={styles.add_item_fields}>
       <TextInput
@@ -18,6 +18,7 @@ export default function AddItem({ submitHandler, changeHandler, value }) {
         style={styles.add_icon}
         name="add-to-list"
         onPress={submitHandler}
+        onSubmitEditing={Keyboard.dismiss}
       />
     </View>
   );
